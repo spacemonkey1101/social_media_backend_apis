@@ -22,7 +22,7 @@ def get_posts():
     return {"Data": "Get Posts"}
 
 
-@app.post("/create-post")
+@app.post("/posts")
 def create_post(new_post: Post):
     print(new_post.model_dump()) # convert the object to a dictionary
     return {"New Post": f"Title : {new_post.title} \

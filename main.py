@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import FastAPI, Body
 from pydantic import BaseModel
 
@@ -7,6 +8,8 @@ app = FastAPI()  # fastapi instance
 class Post(BaseModel):
     title: str
     content: str
+    published : bool = True # true is the default value
+    rating : Optional[int] = None # truly optional field
 
 
 @app.get("/")  # GET operation on ROOT path/route -- this does the fastapi magic
@@ -21,4 +24,7 @@ def get_posts():
 
 @app.post("/create-post")
 def create_post(new_post: Post):
-    return {"New Post": f"Title : {new_post.title} Content: {new_post.content}"}
+    return {"New Post": f"Title : {new_post.title} \
+        Content: {new_post.content} \
+        Published: {new_post.published}\
+        Rating: {new_post.rating}"}

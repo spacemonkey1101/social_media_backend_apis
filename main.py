@@ -24,6 +24,7 @@ def get_posts():
 
 @app.post("/create-post")
 def create_post(new_post: Post):
+    print(new_post.model_dump()) # convert the object to a dictionary
     return {"New Post": f"Title : {new_post.title} \
         Content: {new_post.content} \
         Published: {new_post.published}\

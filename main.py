@@ -1,3 +1,4 @@
+import random
 from typing import Optional
 from fastapi import FastAPI, Body
 from pydantic import BaseModel
@@ -27,13 +28,18 @@ def get_root():
 def get_posts():
     return {"Data": MY_POSTS}
 
+# post_id is a path parameter
+@app.get("/posts/{post_id}")
+def get_post(post_id : int):
+    for item in MY_POSTS:
+        if item['id'] == post_id:
+            return {"Data" : item}
+    return {"Data": f"No posts found with id : {post_id}"}
 
 @app.post("/posts")
 def create_post(new_post: Post):
-    print(new_post.model_dump())  # convert the object to a dictionary
-    return {
-        "New Post": f"Title : {new_post.title} \
-        Content: {new_post.content} \
-        Published: {new_post.published}\
-        Rating: {new_post.rating}"
-    }
+    post_dict = new_post.model_dump()  # convert the object to a dictionary
+    # add random id to the entry -- not recommended
+    post_dict["id"] = random.randint(0, 1000000)
+    MY_POSTS.append(post_dict)  # adding post to memory
+    return {"data": post_dict}

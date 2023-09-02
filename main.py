@@ -36,7 +36,7 @@ def get_post(post_id : int):
             return {"Data" : item}
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail= f"No posts found with id : {post_id}")
 
-@app.post("/posts")
+@app.post("/posts",status_code=status.HTTP_201_CREATED)
 def create_post(new_post: Post):
     post_dict = new_post.model_dump()  # convert the object to a dictionary
     # add random id to the entry -- not recommended

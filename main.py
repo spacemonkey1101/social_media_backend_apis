@@ -60,3 +60,17 @@ def delete_post(post_id: int):
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"No posts found with id : {post_id}",
     )
+
+
+@app.put("/posts/{post_id}")
+def delete_post(post_id: int, post_update: Post):
+    for index in range(len(MY_POSTS)):
+        if MY_POSTS[index]["id"] == post_id:
+            post_dict = post_update.model_dump()
+            post_dict["id"] = MY_POSTS[index]["id"]
+            MY_POSTS[index] = post_dict
+            return {"data": MY_POSTS[index]}
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"No posts found with id : {post_id}",
+    )

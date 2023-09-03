@@ -1,2 +1,2 @@
-apivenv
-__pycache__
+apivenv/
+__pycache__/

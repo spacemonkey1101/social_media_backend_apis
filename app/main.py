@@ -4,18 +4,22 @@ from fastapi import FastAPI, Body, Response, status, HTTPException
 from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
+import time
 
-try:
-    # Connect to your postgres DB
-    conn = psycopg2.connect(
-        "host=localhost dbname=social_media_db user=postgres password=password123",
-        cursor_factory=RealDictCursor,
-    )
-    # Open a cursor to perform database operations
-    cursor = conn.cursor()
-    print("Database connection was successfull")
-except Exception as e:
-    print("Connecting to database failed with error : ", e)
+while True:
+    try:
+        # Connect to your postgres DB
+        conn = psycopg2.connect(
+            "host=localhost dbname=social_media_db user=postgres password=password1234",
+            cursor_factory=RealDictCursor,
+        )
+        # Open a cursor to perform database operations
+        cursor = conn.cursor()
+        print("Database connection was successfull")
+        break  # break out if we are able to establish a connection
+    except Exception as e:
+        print("Connecting to database failed with error : ", e)
+        time.sleep(2)  # sleep for 2 seconds and then try again
 
 app = FastAPI()  # fastapi instance
 # This is where we store our posts to memory

@@ -34,7 +34,7 @@ class Post(BaseModel):
     title: str
     content: str
     published: bool = True  # true is the default value
-    rating: Optional[int] = None  # truly optional field
+    # rating: Optional[int] = None  # truly optional field
 
 
 @app.get("/")  # GET operation on ROOT path/route -- this does the fastapi magic
@@ -44,7 +44,6 @@ def get_root():
 
 @app.get("/posts")
 def get_posts():
-    
     # Execute a query
     cursor.execute("SELECT * FROM posts")
 
@@ -67,11 +66,18 @@ def get_post(post_id: int):
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_post(new_post: Post):
-    post_dict = new_post.model_dump()  # convert the object to a dictionary
-    # add random id to the entry -- not recommended
-    post_dict["id"] = random.randint(0, 1000000)
-    MY_POSTS.append(post_dict)  # adding post to memory
-    return {"data": post_dict}
+    # this is vulnerable to SQL injection
+    # cursor.execute(f"INSERT INTO posts(title,content,published) VALUES ('{new_post.title}','{new_post.content}','{new_post.published}')")
+    # cursor.execute does sanity check in the second arg for SQL attack
+    cursor.execute(
+        """INSERT INTO posts(title,content,published) VALUES (%s,%s,%s)
+        RETURNING *""",
+        (new_post.title, new_post.content, new_post.published),
+    )
+    new_post = cursor.fetchone()
+    # to save changes to our db
+    conn.commit()
+    return {"data": new_post}
 
 
 @app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)

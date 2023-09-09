@@ -10,7 +10,7 @@ while True:
     try:
         # Connect to your postgres DB
         conn = psycopg2.connect(
-            "host=localhost dbname=social_media_db user=postgres password=password1234",
+            "host=localhost dbname=social_media_db user=postgres password=password123",
             cursor_factory=RealDictCursor,
         )
         # Open a cursor to perform database operations
@@ -44,7 +44,13 @@ def get_root():
 
 @app.get("/posts")
 def get_posts():
-    return {"Data": MY_POSTS}
+    
+    # Execute a query
+    cursor.execute("SELECT * FROM posts")
+
+    # Retrieve query results
+    posts = cursor.fetchall()
+    return {"Data": posts}
 
 
 # post_id is a path parameter

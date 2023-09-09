@@ -55,9 +55,12 @@ def get_posts():
 # post_id is a path parameter
 @app.get("/posts/{post_id}")
 def get_post(post_id: int):
-    for item in MY_POSTS:
-        if item["id"] == post_id:
-            return {"Data": item}
+    cursor.execute("SELECT * FROM posts where id = %s", [str(post_id)])
+    # %s should match with string type -- so the conversion
+    # the 2nd arg must be an iterable -- so we can choose to pass list, tuple anything
+    post = cursor.fetchone()
+    if post:
+        return {"Data": post}
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"No posts found with id : {post_id}",
@@ -76,7 +79,6 @@ def create_post(new_post: Post):
     )
     new_post = cursor.fetchone()
     # to save changes to our db
-    conn.commit()
     return {"data": new_post}
 
 

@@ -5,8 +5,8 @@ from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
-import models
-from database import engine, SessionLocal
+from . import models
+from .database import engine, SessionLocal
 from sqlalchemy.orm import Session
 
 while True:

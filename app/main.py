@@ -5,6 +5,8 @@ from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
+import models
+from database import engine, SessionLocal 
 
 while True:
     try:
@@ -21,6 +23,15 @@ while True:
         print("Connecting to database failed with error : ", e)
         time.sleep(2)  # sleep for 2 seconds and then try again
 
+models.Base.metadata.create_all(bind=engine)
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+        
 app = FastAPI()  # fastapi instance
 # This is where we store our posts to memory
 MY_POSTS = [

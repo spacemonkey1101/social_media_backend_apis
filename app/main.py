@@ -6,7 +6,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
 from . import models
-from .database import engine, SessionLocal
+from .database import engine, get_db
 from sqlalchemy.orm import Session
 
 while True:
@@ -26,18 +26,7 @@ while True:
 
 models.Base.metadata.create_all(bind=engine)
 
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
 app = FastAPI()  # fastapi instance
-
 
 # schema of post
 class Post(BaseModel):

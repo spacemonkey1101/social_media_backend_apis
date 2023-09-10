@@ -33,12 +33,6 @@ def get_db():
         db.close()
         
 app = FastAPI()  # fastapi instance
-# This is where we store our posts to memory
-MY_POSTS = [
-    {"id": 1, "title": "Title of post 1", "content": "Content of post1"},
-    {"id": 2, "title": "Title of post 2", "content": "Content of post2"},
-]
-
 
 # schema of post
 class Post(BaseModel):

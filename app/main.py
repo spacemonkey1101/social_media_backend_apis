@@ -1,12 +1,13 @@
 import random
 from typing import Optional
-from fastapi import FastAPI, Body, Response, status, HTTPException
+from fastapi import Depends, FastAPI, Body, Response, status, HTTPException
 from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
 import models
-from database import engine, SessionLocal 
+from database import engine, SessionLocal
+from sqlalchemy.orm import Session
 
 while True:
     try:
@@ -24,6 +25,8 @@ while True:
         time.sleep(2)  # sleep for 2 seconds and then try again
 
 models.Base.metadata.create_all(bind=engine)
+
+
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -31,8 +34,10 @@ def get_db():
         yield db
     finally:
         db.close()
-        
+
+
 app = FastAPI()  # fastapi instance
+
 
 # schema of post
 class Post(BaseModel):
@@ -112,8 +117,14 @@ def update_post(post_id: int, post_update: Post):
     updated_post = cursor.fetchone()
     conn.commit()
     if updated_post:
-        return {"data": updated_post }
+        return {"data": updated_post}
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"No posts found with id : {post_id}",
     )
+
+
+# test endpoint to check if the DB session works
+@app.get("/sqlachemy")
+def test(db: Session = Depends(get_db)):
+    return {"status": "success"}

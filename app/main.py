@@ -43,12 +43,13 @@ def get_root():
 
 
 @app.get("/posts")
-def get_posts():
-    # Execute a query
-    cursor.execute("SELECT * FROM posts")
+def get_posts(db: Session = Depends(get_db)):
+    # # Execute a query
+    # cursor.execute("SELECT * FROM posts")
 
-    # Retrieve query results
-    posts = cursor.fetchall()
+    # # Retrieve query results
+    # posts = cursor.fetchall()
+    posts = db.query(models.Post).all()
     return {"Data": posts}
 
 

@@ -114,16 +114,22 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/posts/{post_id}")
-def update_post(post_id: int, post_update: Post):
-    QUERY = (
-        "UPDATE posts SET title=%s, content=%s, published=%s WHERE id = %s RETURNING *"
-    )
-    cursor.execute(
-        QUERY,
-        (post_update.title, post_update.content, post_update.published, str(post_id)),
-    )
-    updated_post = cursor.fetchone()
-    conn.commit()
+def update_post(post_id: int, post_update: Post, db: Session = Depends(get_db)):
+    # QUERY = (
+    #     "UPDATE posts SET title=%s, content=%s, published=%s WHERE id = %s RETURNING *"
+    # )
+    post_query = db.query(models.Post).filter(models.Post.id == post_id)
+    # cursor.execute(
+    #     QUERY,
+    #     (post_update.title, post_update.content, post_update.published, str(post_id)),
+    # )
+    # updated_post = cursor.fetchone()
+    updated_post = post_query.first()
+    post_query.update(post_update.model_dump())
+    # conn.commit()
+    db.commit()
+    # for the RETURNING * part in SQL.
+    db.refresh(updated_post)
     if updated_post:
         return {"data": updated_post}
     raise HTTPException(

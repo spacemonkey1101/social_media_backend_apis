@@ -114,10 +114,3 @@ def update_post(post_id: int, post_update: Post):
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"No posts found with id : {post_id}",
     )
-
-
-# test endpoint to check if the DB session works
-@app.get("/sqlachemy")
-def test(db: Session = Depends(get_db)):
-    all_posts = db.query(models.Post).all()
-    return {"data": all_posts}

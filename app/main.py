@@ -79,7 +79,9 @@ def create_post(new_post: Post, db: Session = Depends(get_db)):
     #     (new_post.title, new_post.content, new_post.published),
     # )
     new_post = models.Post(
-        title=new_post.title, content=new_post.content, published=new_post.published
+        # title=new_post.title, content=new_post.content, published=new_post.published
+        # More efficent way to do the above is to unpack a dict which gives the above output
+        **new_post.model_dump()
     )
     # new_post = cursor.fetchone()
     db.add(new_post)

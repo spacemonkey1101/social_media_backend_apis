@@ -28,6 +28,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()  # fastapi instance
 
+
 # schema of post
 class Post(BaseModel):
     title: str
@@ -78,6 +79,7 @@ def create_post(new_post: Post):
     )
     new_post = cursor.fetchone()
     # to save changes to our db
+    conn.commit()
     return {"data": new_post}
 
 
@@ -116,4 +118,5 @@ def update_post(post_id: int, post_update: Post):
 # test endpoint to check if the DB session works
 @app.get("/sqlachemy")
 def test(db: Session = Depends(get_db)):
-    return {"status": "success"}
+    all_posts = db.query(models.Post).all()
+    return {"data": all_posts}

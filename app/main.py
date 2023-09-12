@@ -55,11 +55,13 @@ def get_posts(db: Session = Depends(get_db)):
 
 # post_id is a path parameter
 @app.get("/posts/{post_id}")
-def get_post(post_id: int):
-    cursor.execute("SELECT * FROM posts where id = %s", [str(post_id)])
+def get_post(post_id: int, db: Session = Depends(get_db)):
+    # cursor.execute("SELECT * FROM posts where id = %s", [str(post_id)])
     # %s should match with string type -- so the conversion
     # the 2nd arg must be an iterable -- so we can choose to pass list, tuple anything
-    post = cursor.fetchone()
+    # post = cursor.fetchone()
+    post = db.query(models.Post).filter(models.Post.id == post_id).first()
+    # filer ~ WHERE,fetchone ~ one(), we can use first to get the first match
     if post:
         return {"Data": post}
     raise HTTPException(

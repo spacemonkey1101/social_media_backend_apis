@@ -96,10 +96,15 @@ def create_post(new_post: Post, db: Session = Depends(get_db)):
 
 
 @app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(post_id: int):
-    cursor.execute("DELETE from posts WHERE id = %s returning *", [str(post_id)])
-    deleted_post = cursor.fetchone()
-    conn.commit()
+def delete_post(post_id: int, db: Session = Depends(get_db)):
+    # cursor.execute("DELETE from posts WHERE id = %s returning *", [str(post_id)])
+    # deleted_post = cursor.fetchone()
+    deleted_post = db.query(models.Post).filter(models.Post.id == post_id).first()
+    db.delete(deleted_post)
+
+    # conn.commit()
+    db.commit()
+
     if deleted_post:
         return
     raise HTTPException(

@@ -69,18 +69,25 @@ def get_post(post_id: int):
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(new_post: Post):
+def create_post(new_post: Post, db: Session = Depends(get_db)):
     # this is vulnerable to SQL injection
     # cursor.execute(f"INSERT INTO posts(title,content,published) VALUES ('{new_post.title}','{new_post.content}','{new_post.published}')")
     # cursor.execute does sanity check in the second arg for SQL attack
-    cursor.execute(
-        """INSERT INTO posts(title,content,published) VALUES (%s,%s,%s)
-        RETURNING *""",
-        (new_post.title, new_post.content, new_post.published),
+    # cursor.execute(
+    #     """INSERT INTO posts(title,content,published) VALUES (%s,%s,%s)
+    #     RETURNING *""",
+    #     (new_post.title, new_post.content, new_post.published),
+    # )
+    new_post = models.Post(
+        title=new_post.title, content=new_post.content, published=new_post.published
     )
-    new_post = cursor.fetchone()
-    # to save changes to our db
-    conn.commit()
+    # new_post = cursor.fetchone()
+    db.add(new_post)
+    # # to save changes to our db
+    # conn.commit()
+    db.commit()
+    # for the RETURNING * part in SQL.
+    db.refresh(new_post)
     return {"data": new_post}
 
 

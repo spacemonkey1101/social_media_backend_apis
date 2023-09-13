@@ -5,7 +5,7 @@ from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
-from . import models
+from . import models,schemas
 from .database import engine, get_db
 from sqlalchemy.orm import Session
 
@@ -28,14 +28,6 @@ while True:
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()  # fastapi instance
-
-
-# schema of post
-class Post(BaseModel):
-    title: str
-    content: str
-    published: bool = True  # true is the default value
-    # rating: Optional[int] = None  # truly optional field
 
 
 @app.get("/")  # GET operation on ROOT path/route -- this does the fastapi magic
@@ -72,7 +64,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(new_post: Post, db: Session = Depends(get_db)):
+def create_post(new_post: schemas.Post, db: Session = Depends(get_db)):
     # this is vulnerable to SQL injection
     # cursor.execute(f"INSERT INTO posts(title,content,published) VALUES ('{new_post.title}','{new_post.content}','{new_post.published}')")
     # cursor.execute does sanity check in the second arg for SQL attack
@@ -115,7 +107,7 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/posts/{post_id}")
-def update_post(post_id: int, post_update: Post, db: Session = Depends(get_db)):
+def update_post(post_id: int, post_update: schemas.Post, db: Session = Depends(get_db)):
     # QUERY = (
     #     "UPDATE posts SET title=%s, content=%s, published=%s WHERE id = %s RETURNING *"
     # )

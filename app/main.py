@@ -31,7 +31,7 @@ def get_root():
     return {"Data": "hello world"}
 
 
-@app.get("/posts")
+@app.get("/posts", response_model=schemas.PostResponse)
 def get_posts(db: Session = Depends(get_db)):
     # # Execute a query
     # cursor.execute("SELECT * FROM posts")
@@ -43,7 +43,7 @@ def get_posts(db: Session = Depends(get_db)):
 
 
 # post_id is a path parameter
-@app.get("/posts/{post_id}")
+@app.get("/posts/{post_id}", response_model=schemas.PostResponse)
 def get_post(post_id: int, db: Session = Depends(get_db)):
     # cursor.execute("SELECT * FROM posts where id = %s", [str(post_id)])
     # %s should match with string type -- so the conversion

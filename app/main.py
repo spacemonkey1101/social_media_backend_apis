@@ -39,7 +39,7 @@ def get_posts(db: Session = Depends(get_db)):
     # # Retrieve query results
     # posts = cursor.fetchall()
     posts = db.query(models.Post).all()
-    return {"Data": posts}
+    return posts
 
 
 # post_id is a path parameter
@@ -52,7 +52,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
     post = db.query(models.Post).filter(models.Post.id == post_id).first()
     # filer ~ WHERE,fetchone ~ one(), we can use first to get the first match
     if post:
-        return {"Data": post}
+        return post
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"No posts found with id : {post_id}",
@@ -81,7 +81,7 @@ def create_post(new_post: schemas.PostCreate, db: Session = Depends(get_db)):
     db.commit()
     # for the RETURNING * part in SQL.
     db.refresh(new_post)
-    return {"data": new_post}
+    return new_post
 
 
 @app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -103,7 +103,9 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/posts/{post_id}")
-def update_post(post_id: int, post_update: schemas.PostUpdate, db: Session = Depends(get_db)):
+def update_post(
+    post_id: int, post_update: schemas.PostUpdate, db: Session = Depends(get_db)
+):
     # QUERY = (
     #     "UPDATE posts SET title=%s, content=%s, published=%s WHERE id = %s RETURNING *"
     # )
@@ -120,7 +122,7 @@ def update_post(post_id: int, post_update: schemas.PostUpdate, db: Session = Dep
     # for the RETURNING * part in SQL.
     db.refresh(updated_post)
     if updated_post:
-        return {"data": updated_post}
+        return updated_post
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"No posts found with id : {post_id}",

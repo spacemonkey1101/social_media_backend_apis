@@ -9,6 +9,7 @@ from . import models
 from .database import engine, get_db
 from sqlalchemy.orm import Session
 
+"""
 while True:
     try:
         # Connect to your postgres DB
@@ -23,7 +24,7 @@ while True:
     except Exception as e:
         print("Connecting to database failed with error : ", e)
         time.sleep(2)  # sleep for 2 seconds and then try again
-
+"""
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()  # fastapi instance

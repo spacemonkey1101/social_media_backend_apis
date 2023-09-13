@@ -1,11 +1,7 @@
-import random
-from typing import Optional
-from fastapi import Depends, FastAPI, Body, Response, status, HTTPException
-from pydantic import BaseModel
+from fastapi import Depends, FastAPI, status, HTTPException
 import psycopg2
 from psycopg2.extras import RealDictCursor
-import time
-from . import models,schemas
+from . import models, schemas
 from .database import engine, get_db
 from sqlalchemy.orm import Session
 

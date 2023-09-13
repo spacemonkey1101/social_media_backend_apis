@@ -60,7 +60,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(new_post: schemas.Post, db: Session = Depends(get_db)):
+def create_post(new_post: schemas.PostCreate, db: Session = Depends(get_db)):
     # this is vulnerable to SQL injection
     # cursor.execute(f"INSERT INTO posts(title,content,published) VALUES ('{new_post.title}','{new_post.content}','{new_post.published}')")
     # cursor.execute does sanity check in the second arg for SQL attack
@@ -103,7 +103,7 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/posts/{post_id}")
-def update_post(post_id: int, post_update: schemas.Post, db: Session = Depends(get_db)):
+def update_post(post_id: int, post_update: schemas.PostUpdate, db: Session = Depends(get_db)):
     # QUERY = (
     #     "UPDATE posts SET title=%s, content=%s, published=%s WHERE id = %s RETURNING *"
     # )

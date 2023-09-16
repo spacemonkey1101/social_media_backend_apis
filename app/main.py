@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import Depends, FastAPI, status, HTTPException
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -30,8 +31,8 @@ app = FastAPI()  # fastapi instance
 def get_root():
     return {"Data": "hello world"}
 
-
-@app.get("/posts", response_model=schemas.PostResponse)
+# List as the response model as we return a list of PostResponse
+@app.get("/posts", response_model=List[schemas.PostResponse])
 def get_posts(db: Session = Depends(get_db)):
     # # Execute a query
     # cursor.execute("SELECT * FROM posts")
@@ -59,7 +60,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
     )
 
 
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
+@app.post("/posts", status_code=status.HTTP_201_CREATED,response_model=schemas.PostResponse)
 def create_post(new_post: schemas.PostCreate, db: Session = Depends(get_db)):
     # this is vulnerable to SQL injection
     # cursor.execute(f"INSERT INTO posts(title,content,published) VALUES ('{new_post.title}','{new_post.content}','{new_post.published}')")

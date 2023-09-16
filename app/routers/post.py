@@ -1,13 +1,13 @@
 from typing import List
-from fastapi import Depends, FastAPI, status, HTTPException
+from fastapi import Depends, FastAPI, status, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 from .. import models, schemas, utils
 from ..database import get_db
 
-
+router = APIRouter()
 
 # List as the response model as we return a list of PostResponse
-@app.get("/posts", response_model=List[schemas.PostResponse])
+@router.get("/posts", response_model=List[schemas.PostResponse])
 def get_posts(db: Session = Depends(get_db)):
     # # Execute a query
     # cursor.execute("SELECT * FROM posts")
@@ -19,7 +19,7 @@ def get_posts(db: Session = Depends(get_db)):
 
 
 # post_id is a path parameter
-@app.get("/posts/{post_id}", response_model=schemas.PostResponse)
+@router.get("/posts/{post_id}", response_model=schemas.PostResponse)
 def get_post(post_id: int, db: Session = Depends(get_db)):
     # cursor.execute("SELECT * FROM posts where id = %s", [str(post_id)])
     # %s should match with string type -- so the conversion
@@ -35,7 +35,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
     )
 
 
-@app.post(
+@router.post(
     "/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse
 )
 def create_post(new_post: schemas.PostCreate, db: Session = Depends(get_db)):
@@ -62,7 +62,7 @@ def create_post(new_post: schemas.PostCreate, db: Session = Depends(get_db)):
     return new_post
 
 
-@app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(post_id: int, db: Session = Depends(get_db)):
     # cursor.execute("DELETE from posts WHERE id = %s returning *", [str(post_id)])
     # deleted_post = cursor.fetchone()
@@ -80,7 +80,7 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
     )
 
 
-@app.put("/posts/{post_id}")
+@router.put("/posts/{post_id}")
 def update_post(
     post_id: int, post_update: schemas.PostUpdate, db: Session = Depends(get_db)
 ):

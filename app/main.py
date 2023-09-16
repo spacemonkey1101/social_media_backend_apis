@@ -10,7 +10,6 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()  # fastapi instance
 
-
 @app.get("/")  # GET operation on ROOT path/route -- this does the fastapi magic
 def get_root():
     return {"Data": "hello world"}
@@ -44,7 +43,9 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
     )
 
 
-@app.post("/posts", status_code=status.HTTP_201_CREATED,response_model=schemas.PostResponse)
+@app.post(
+    "/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse
+)
 def create_post(new_post: schemas.PostCreate, db: Session = Depends(get_db)):
     # this is vulnerable to SQL injection
     # cursor.execute(f"INSERT INTO posts(title,content,published) VALUES ('{new_post.title}','{new_post.content}','{new_post.published}')")
@@ -112,3 +113,12 @@ def update_post(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"No posts found with id : {post_id}",
     )
+
+
+@app.post("/users", status_code=status.HTTP_201_CREATED)
+def create_post(new_user: schemas.UserCreate, db: Session = Depends(get_db)):
+    new_user = models.User(**new_user.model_dump())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user

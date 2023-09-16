@@ -1,5 +1,5 @@
 # schema of post
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 # user sending data to us
@@ -22,3 +22,7 @@ class PostUpdate(PostBase):
 class PostResponse(PostBase):
     class Config:
         orm_mode = True
+
+class UserCreate(BaseModel):
+    email : EmailStr
+    password : str

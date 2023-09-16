@@ -10,9 +10,11 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()  # fastapi instance
 
+
 @app.get("/")  # GET operation on ROOT path/route -- this does the fastapi magic
 def get_root():
     return {"Data": "hello world"}
+
 
 # List as the response model as we return a list of PostResponse
 @app.get("/posts", response_model=List[schemas.PostResponse])
@@ -115,7 +117,9 @@ def update_post(
     )
 
 
-@app.post("/users", status_code=status.HTTP_201_CREATED)
+@app.post(
+    "/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse
+)
 def create_post(new_user: schemas.UserCreate, db: Session = Depends(get_db)):
     new_user = models.User(**new_user.model_dump())
     db.add(new_user)

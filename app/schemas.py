@@ -19,10 +19,6 @@ class PostUpdate(PostBase):
 
 # us sending data to user
 # we wont send back ID or created at like we did as this is private info and not useful to the user
-class PostResponse(BaseModel):
-    title: str
-    content: str
-    published: bool
-
+class PostResponse(PostBase):
     class Config:
         orm_mode = True

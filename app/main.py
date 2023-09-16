@@ -6,22 +6,6 @@ from . import models, schemas
 from .database import engine, get_db
 from sqlalchemy.orm import Session
 
-"""
-while True:
-    try:
-        # Connect to your postgres DB
-        conn = psycopg2.connect(
-            "host=localhost dbname=social_media_db user=postgres password=password123",
-            cursor_factory=RealDictCursor,
-        )
-        # Open a cursor to perform database operations
-        cursor = conn.cursor()
-        print("Database connection was successfull")
-        break  # break out if we are able to establish a connection
-    except Exception as e:
-        print("Connecting to database failed with error : ", e)
-        time.sleep(2)  # sleep for 2 seconds and then try again
-"""
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()  # fastapi instance

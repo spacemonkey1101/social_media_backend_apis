@@ -120,7 +120,7 @@ def update_post(
 @app.post(
     "/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse
 )
-def create_post(new_user: schemas.UserCreate, db: Session = Depends(get_db)):
+def create_user(new_user: schemas.UserCreate, db: Session = Depends(get_db)):
     # update user password with the hashed password
     new_user.password = utils.hash(new_user.password)
     new_user = models.User(**new_user.model_dump())

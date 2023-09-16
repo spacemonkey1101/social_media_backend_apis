@@ -130,7 +130,7 @@ def create_user(new_user: schemas.UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 
-@app.get("/users/{user_id}")
+@app.get("/users/{user_id}",response_model=schemas.UserResponse)
 def get_user(user_id: int, db: Session = Depends(get_db)):
     user_info = db.query(models.User).filter(models.User.id == user_id).first()
     if user_info:

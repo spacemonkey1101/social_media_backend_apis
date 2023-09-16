@@ -1,13 +1,11 @@
 from typing import List
 from fastapi import Depends, FastAPI, status, HTTPException
 import psycopg2
-from passlib.context import CryptContext
 from psycopg2.extras import RealDictCursor
-from . import models, schemas
+from . import models, schemas, utils
 from .database import engine, get_db
 from sqlalchemy.orm import Session
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()  # fastapi instance
@@ -123,10 +121,8 @@ def update_post(
     "/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse
 )
 def create_post(new_user: schemas.UserCreate, db: Session = Depends(get_db)):
-    # we need to create the hash of the password before creating the user
-    hashed_password = pwd_context.hash(new_user.password)
     # update user password with the hashed password
-    new_user.password = hashed_password
+    new_user.password = utils.hash(new_user.password)
     new_user = models.User(**new_user.model_dump())
     db.add(new_user)
     db.commit()

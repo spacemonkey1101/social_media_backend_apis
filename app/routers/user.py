@@ -1,9 +1,10 @@
 from fastapi import Depends, FastAPI, status, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 from .. import models, schemas, utils
-from ..database import  get_db
+from ..database import get_db
 
-router = APIRouter(prefix="/users")
+router = APIRouter(prefix="/users", tags=["User"])
+
 
 @router.post(
     "/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse
@@ -18,7 +19,7 @@ def create_user(new_user: schemas.UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 
-@router.get("/{user_id}",response_model=schemas.UserResponse)
+@router.get("/{user_id}", response_model=schemas.UserResponse)
 def get_user(user_id: int, db: Session = Depends(get_db)):
     user_info = db.query(models.User).filter(models.User.id == user_id).first()
     if user_info:

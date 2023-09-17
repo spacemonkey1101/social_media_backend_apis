@@ -5,7 +5,7 @@ from .. import models, schemas, utils
 from ..database import get_db
 
 # we use prefix since all our endpoint start with "/posts"
-router = APIRouter(prefix="/posts")
+router = APIRouter(prefix="/posts", tags=["Post"])
 
 
 # List as the response model as we return a list of PostResponse

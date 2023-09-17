@@ -13,7 +13,7 @@ def create_access_token(payload: dict):
     # expiry time = current time + 30 mins
     expiry_time = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     # add expiration time to payload
-    payload_copy_to_encode.update({"expiry_time": expiry_time})
+    payload_copy_to_encode.update({"expiry_time": str(expiry_time)})
 
     new_encoded_jwt = jwt.encode(
         payload_copy_to_encode, SECRET_KEY, algorithm=ALGORITHM

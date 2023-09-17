@@ -22,7 +22,7 @@ def user_login(
     )
     if not user_info_from_db:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Invalid Credentials",
         )
     verified_pass = utils.verify_hashed_password(
@@ -30,7 +30,7 @@ def user_login(
     )
     if not verified_pass:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Invalid Credentials",
         )
     # get a new JWT token

@@ -23,12 +23,20 @@ class PostResponse(PostBase):
     class Config:
         orm_mode = True
 
+
 class UserCreate(BaseModel):
-    email : EmailStr
-    password : str
-    
-class UserResponse(BaseModel):
-    id : int
     email: EmailStr
+    password: str
+
+
+class UserResponse(BaseModel):
+    id: int
+    email: EmailStr
+
     class Config:
         orm_mode = True
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str

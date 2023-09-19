@@ -20,7 +20,7 @@ def create_access_token(payload: dict):
     payload_copy_to_encode.update({"expiry_time": str(expiry_time)})
 
     new_encoded_jwt = jwt.encode(
-        payload_copy_to_encode, SECRET_KEY, algorithm=[ALGORITHM]
+        payload_copy_to_encode, SECRET_KEY, algorithm=ALGORITHM
     )
     return new_encoded_jwt
 
@@ -28,7 +28,7 @@ def create_access_token(payload: dict):
 def verify_access_token(token: str, credentials_exception):
     try:
         # decode the token sent by the user to verify if the token is valid
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
         # from payload we get the user_id that we put in while sending a payload
         user_id = payload.get("user_id")
 
@@ -47,5 +47,4 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         detail=f"Invalid Credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    
     return verify_access_token(token, credentials_exception)

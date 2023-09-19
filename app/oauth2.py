@@ -22,7 +22,7 @@ def create_access_token(payload: dict):
     return new_encoded_jwt
 
 
-def verify_access_token(token: str, credentials_exception: JWTError):
+def verify_access_token(token: str, credentials_exception):
     try:
         # decode the token sent by the user to verify if the token is valid
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
@@ -35,3 +35,4 @@ def verify_access_token(token: str, credentials_exception: JWTError):
         token_data = schemas.TokenData(user_id=user_id)
     except JWTError:
         raise credentials_exception
+    return token_data

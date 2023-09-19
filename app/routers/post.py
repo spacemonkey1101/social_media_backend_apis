@@ -45,6 +45,7 @@ def create_post(
     db: Session = Depends(get_db),
     user_id: int = Depends(oauth2.get_current_user)
 ):
+    print(user_id)
     # this is vulnerable to SQL injection
     # cursor.execute(f"INSERT INTO posts(title,content,published) VALUES ('{new_post.title}','{new_post.content}','{new_post.published}')")
     # cursor.execute does sanity check in the second arg for SQL attack

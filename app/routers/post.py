@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import Depends, FastAPI, status, HTTPException, APIRouter
 from sqlalchemy.orm import Session
-from .. import models, schemas, utils
+from .. import models, schemas, utils, oauth2
 from ..database import get_db
 
 # we use prefix since all our endpoint start with "/posts"
@@ -40,7 +40,11 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 @router.post(
     "/", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse
 )
-def create_post(new_post: schemas.PostCreate, db: Session = Depends(get_db)):
+def create_post(
+    new_post: schemas.PostCreate,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(oauth2.get_current_user)
+):
     # this is vulnerable to SQL injection
     # cursor.execute(f"INSERT INTO posts(title,content,published) VALUES ('{new_post.title}','{new_post.content}','{new_post.published}')")
     # cursor.execute does sanity check in the second arg for SQL attack
